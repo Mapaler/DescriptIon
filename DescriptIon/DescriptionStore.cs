@@ -167,7 +167,6 @@ namespace DescriptIon
         public void Save()
         {
             string filePath = Path.Combine(_directory.FullName, FileName);
-            bool fileExistedBeforeSave = File.Exists(filePath);
             List<string> lines = new List<string>();
 
             foreach (DescriptIonEntry entry in _entries.Values)
@@ -200,17 +199,6 @@ namespace DescriptIon
 
             Encoding encodingToUse = _encoding ?? new UTF8Encoding(true); // 默认 UTF-8 with BOM
             SmartFile.WriteAllText(filePath, string.Join(Environment.NewLine, lines), encodingToUse);
-            // 如果是全新创建的文件，则设为隐藏
-            if (!fileExistedBeforeSave && File.Exists(filePath))
-            {
-                try
-                {
-                    File.SetAttributes(filePath, File.GetAttributes(filePath) | FileAttributes.Hidden);
-                }
-                catch (Exception)
-                {
-                }
-            }
         }
 
         /// <summary>

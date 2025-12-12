@@ -113,13 +113,45 @@ namespace DescriptIon
         public static void WriteAllText(string filePath, string content, Encoding encoding = null)
         {
             if (filePath == null) throw new ArgumentNullException(nameof(filePath));
-            encoding ??= new UTF8Encoding(true); // 默认：UTF-8 with BOM
+            encoding ??= new UTF8Encoding(true);
+
             string directory = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrEmpty(directory))
-                Directory.CreateDirectory(directory);
-            using FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
-            using StreamWriter writer = new StreamWriter(fs, encoding);
-            writer.Write(content);
+            if (!string.IsNullOrEmpty(directory)) Directory.CreateDirectory(directory);
+
+            // 👇 新增：如果文件存在且是隐藏的，临时取消隐藏
+            bool wasHidden = false;
+            if (File.Exists(filePath))
+            {
+                var attrs = File.GetAttributes(filePath);
+                if ((attrs & FileAttributes.Hidden) != 0)
+                {
+                    wasHidden = true;
+                    File.SetAttributes(filePath, attrs & ~FileAttributes.Hidden);
+                }
+            }
+
+            try
+            {
+                using FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+                using StreamWriter writer = new StreamWriter(fs, encoding);
+                writer.Write(content);
+            }
+            finally
+            {
+                // 👇 写入完成后，恢复隐藏属性（如果是新文件，则保持隐藏）
+                if (wasHidden || !File.Exists(filePath)) // 注意：新文件我们仍想隐藏
+                {
+                    try
+                    {
+                        var currentAttrs = File.GetAttributes(filePath);
+                        if ((currentAttrs & FileAttributes.Hidden) == 0)
+                        {
+                            File.SetAttributes(filePath, currentAttrs | FileAttributes.Hidden);
+                        }
+                    }
+                    catch { /* 忽略 */ }
+                }
+            }
         }
         /// <summary>
         /// 将指定字符串写入文件，使用给定的编码（默认为 UTF-8 带 BOM）。

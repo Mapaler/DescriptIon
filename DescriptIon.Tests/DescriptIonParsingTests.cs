@@ -197,4 +197,28 @@ file2.txt Comment 2
         var content = File.ReadAllText(_descriptPath);
         Assert.DoesNotContain("old.txt", content);
     }
+
+    [Fact]
+    public void Save_Should_Update_Hidden_DescriptIon_File()
+    {
+        var dir = new DirectoryInfo("TestHidden");
+        dir.Create();
+        var filePath = Path.Combine(dir.FullName, "descript.ion");
+
+        // 创建一个隐藏的 descript.ion（模拟 TC 行为）
+        File.WriteAllText(filePath, "test.txt Hello");
+        File.SetAttributes(filePath, File.GetAttributes(filePath) | FileAttributes.Hidden);
+
+        // 加载并修改
+        var store = new DescriptionStore(dir.FullName);
+        store.Load();
+        store.SetComment("test.txt", "Updated!");
+        store.Save(); // ← 这里应该不再抛异常
+
+        Assert.True(File.Exists(filePath));
+        var content = File.ReadAllText(filePath);
+        Assert.Contains("Updated!", content);
+
+        dir.Delete(true);
+    }
 }
