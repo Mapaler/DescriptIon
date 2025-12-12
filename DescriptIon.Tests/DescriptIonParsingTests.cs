@@ -181,7 +181,9 @@ file2.txt Comment 2
         var store = new DescriptionStore(_tempDir);
         store.Load();
 
-        Assert.Empty(store.GetComment("README")); // 返回空字符串，非 null
+        string? comment = store.GetComment("README");
+        Assert.NotNull(comment);      // 确保有条目
+        Assert.Empty(comment);        // 然后检查是否为空字符串
     }
 
     [Fact]

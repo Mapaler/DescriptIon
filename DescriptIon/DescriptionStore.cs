@@ -66,7 +66,7 @@ namespace DescriptIon
         /// 获取当前所有注释条目的只读副本。
         /// </summary>
         /// <value>
-        /// 字典的键为文件名（不区分大小写），值为对应的 <see cref="DescriptIonEntry"/> 对象。
+        /// 字典的键为文件名（不区分大小写），值为对应的注释字符串。
         /// 注释内容始终使用标准 <c>\n</c> 表示换行，与底层格式无关。
         /// </value>
         public IReadOnlyDictionary<string, string> Entries =>
