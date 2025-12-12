@@ -172,7 +172,16 @@ file2.txt Comment 2
         Assert.Equal("Comment 1", store.GetComment("file1.txt"));
         Assert.Equal("Comment 2", store.GetComment("file2.txt"));
     }
+    [Fact]
+    public void GetComment_ReturnsNull_WhenFileNotInDescriptIon()
+    {
+        File.WriteAllText(_descriptPath, "README Some comment");
 
+        var store = new DescriptionStore(_tempDir);
+        store.Load();
+
+        Assert.Null(store.GetComment("NONEXISTENT.TXT"));
+    }
     [Fact]
     public void Parse_LineWithoutSpace_TreatedAsFileNameWithEmptyComment()
     {
