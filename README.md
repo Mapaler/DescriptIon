@@ -7,6 +7,7 @@
 
 > [!NOTE]  
 > Mapaler: I'm new to C#, so this library was developed with AI assistance.
+> 🇨🇳 Chinese users: See [README_zh.md](README_zh.md) for the Chinese version.
 
 ---
 
@@ -195,4 +196,8 @@ Bringing `descript.ion` to life in the .NET world!
 
 ---
 
-🇨🇳 Chinese users: See [README_zh.md](README_zh.md) for the Chinese version.
+## Changelog
+
+- **v1.0.1** (2025-12-13)
+  - Fixed: `UnauthorizedAccessException` when updating an existing `descript.ion` file on Windows.
+  - Removed the `DescriptIonEntry` class; now uses `Dictionary<string, string>` internally for simpler design and better performance.

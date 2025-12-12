@@ -186,3 +186,9 @@ MIT License — 免费用于个人和商业项目。
 
 > **让 `descript.ion` 在 .NET 世界焕发新生！**  
 > 适用于文件管理器插件、备份工具、文档整理脚本等场景。
+
+## 更新日志 (Changelog)
+
+- **v1.0.1** (2025-12-13)
+  - 修复：在 Windows 上更新已存在的 `descript.ion` 文件时可能出现 `UnauthorizedAccessException` 的问题。
+  - 移除了 `DescriptIonEntry` 类，内部改用 `Dictionary<string, string>` 存储，简化设计并提升性能。
