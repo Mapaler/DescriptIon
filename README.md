@@ -201,3 +201,6 @@ Bringing `descript.ion` to life in the .NET world!
 - **v1.0.1** (2025-12-13)
   - Fixed: `UnauthorizedAccessException` when updating an existing `descript.ion` file on Windows.
   - Removed the `DescriptIonEntry` class; now uses `Dictionary<string, string>` internally for simpler design and better performance.
+- **v1.0.2** (2025-12-13)
+  - Fixed: Newly created `descript.ion` files were not marked as hidden.
+  - Ensured the file is always set to hidden after write operations, matching Total Commander's behavior.

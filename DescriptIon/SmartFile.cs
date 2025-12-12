@@ -120,7 +120,8 @@ namespace DescriptIon
 
             // 👇 新增：如果文件存在且是隐藏的，临时取消隐藏
             bool wasHidden = false;
-            if (File.Exists(filePath))
+            bool fileExists = File.Exists(filePath);
+            if (fileExists)
             {
                 var attrs = File.GetAttributes(filePath);
                 if ((attrs & FileAttributes.Hidden) != 0)
@@ -139,11 +140,11 @@ namespace DescriptIon
             finally
             {
                 // 👇 写入完成后，恢复隐藏属性（如果是新文件，则保持隐藏）
-                if (wasHidden || !File.Exists(filePath)) // 注意：新文件我们仍想隐藏
+                if (wasHidden || !fileExists) // 注意：新文件我们仍想隐藏
                 {
                     try
                     {
-                        var currentAttrs = File.GetAttributes(filePath);
+                        FileAttributes currentAttrs = File.GetAttributes(filePath);
                         if ((currentAttrs & FileAttributes.Hidden) == 0)
                         {
                             File.SetAttributes(filePath, currentAttrs | FileAttributes.Hidden);

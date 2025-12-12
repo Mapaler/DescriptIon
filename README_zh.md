@@ -192,3 +192,6 @@ MIT License — 免费用于个人和商业项目。
 - **v1.0.1** (2025-12-13)
   - 修复：在 Windows 上更新已存在的 `descript.ion` 文件时可能出现 `UnauthorizedAccessException` 的问题。
   - 移除了 `DescriptIonEntry` 类，内部改用 `Dictionary<string, string>` 存储，简化设计并提升性能。
+- **v1.0.2** (2025-12-13)
+  - 修复：新建的 `descript.ion` 文件未被设为隐藏属性的问题。
+  - 确保所有写入操作后，`descript.ion` 始终保持隐藏状态（符合 Total Commander 行为）。
