@@ -26,13 +26,21 @@
 
 ## 📦 安装
 
-通过 NuGet（即将发布）或直接引用项目：
+通过 NuGet 安装包:
 
 ```bash
-dotnet add reference DescriptIon.csproj
+dotnet add package DescriptIon.Core
 ```
 
-> *当前为源码集成模式，NuGet 包后续提供。*
+或通过包管理控制台安装:
+
+```powershell
+Install-Package DescriptIon.Core
+```
+
+> [!TIP]
+> **为什么叫 `DescriptIon.Core`？**  
+> [`DescriptIon`](https://www.nuget.org/packages/DescriptIon) 包 ID 已被注册。所以我采用 `DescriptIon.Core` 作为包名。
 
 ---
 

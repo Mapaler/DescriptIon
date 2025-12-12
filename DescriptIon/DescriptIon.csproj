@@ -7,7 +7,7 @@
     <LangVersion>8.0</LangVersion>
 
     <!-- NuGet 信息 -->
-    <PackageId>DescriptIon</PackageId>
+    <PackageId>DescriptIon.Core</PackageId>
     <Version>1.0.0</Version>
     <Authors>Mapaler</Authors>
     <Description>Read and write Total Commander's descript.ion files with proper encoding support.</Description>

@@ -28,13 +28,21 @@
 
 ## 📦 Installation
 
-Via NuGet (coming soon) or direct project reference:
+Install the package via NuGet:
 
 ```bash
-dotnet add reference DescriptIon.csproj
+dotnet add package DescriptIon.Core
 ```
 
-> Currently distributed as source code; NuGet package will be available soon.
+Or via Package Manager Console:
+
+```powershell
+Install-Package DescriptIon.Core
+```
+
+> [!TIP]
+> **Why `DescriptIon.Core`?**  
+> The package ID [`DescriptIon`](https://www.nuget.org/packages/DescriptIon) was used. So I uses the name `DescriptIon.Core`.
 
 ---
 
