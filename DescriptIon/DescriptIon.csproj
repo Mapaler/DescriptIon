@@ -7,10 +7,21 @@
     <LangVersion>8.0</LangVersion>
 
     <!-- NuGet 信息 -->
-    <PackageId>DescriptIon.NET</PackageId>
+    <PackageId>DescriptIon</PackageId>
     <Version>1.0.0</Version>
     <Authors>Mapaler</Authors>
     <Description>Read and write Total Commander's descript.ion files with proper encoding support.</Description>
+    
+    <!-- 开源信息 -->
+    <PackageProjectUrl>https://github.com/Mapaler/DescriptIon</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Mapaler/DescriptIon</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    
+    <!-- 许可证 -->
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    
+    <!-- README 关联 -->
+    <PackageReadmeFile>README.md</PackageReadmeFile>
 
     <!-- 生成 XML 文档 -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
