@@ -71,7 +71,7 @@ namespace DescriptIon
         /// <returns>文件的全部文本内容。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="filePath"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="FileNotFoundException">指定的文件不存在。</exception>
-        public static string ReadAllText(string filePath, Encoding encoding = null)
+        public static string ReadAllText(string filePath, Encoding? encoding = null)
         {
             if (filePath == null) throw new ArgumentNullException(nameof(filePath));
             if (!File.Exists(filePath)) throw new FileNotFoundException($"文件未找到: {filePath}");
@@ -90,7 +90,7 @@ namespace DescriptIon
         /// <returns>文件的全部文本内容。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="file"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="FileNotFoundException">文件不存在。</exception>
-        public static string ReadAllText(FileInfo file, Encoding encoding = null)
+        public static string ReadAllText(FileInfo file, Encoding? encoding = null)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
             return ReadAllText(file.FullName, encoding);
@@ -110,7 +110,7 @@ namespace DescriptIon
         /// <remarks>
         /// 如果文件已存在，将被覆盖。父目录会自动创建。
         /// </remarks>
-        public static void WriteAllText(string filePath, string content, Encoding encoding = null)
+        public static void WriteAllText(string filePath, string content, Encoding? encoding = null)
         {
             if (filePath == null) throw new ArgumentNullException(nameof(filePath));
             encoding ??= new UTF8Encoding(true);
@@ -162,7 +162,7 @@ namespace DescriptIon
         /// 要使用的文本编码。若为 <see langword="null"/>，则使用带 BOM 的 UTF-8。
         /// </param>
         /// <exception cref="ArgumentNullException"><paramref name="file"/> 为 <see langword="null"/>。</exception>
-        public static void WriteAllText(FileInfo file, string content, Encoding encoding = null)
+        public static void WriteAllText(FileInfo file, string content, Encoding? encoding = null)
         {
             if (file == null) throw new ArgumentNullException(nameof(file));
             WriteAllText(file.FullName, content, encoding);

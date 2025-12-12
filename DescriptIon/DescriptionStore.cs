@@ -24,9 +24,9 @@ namespace DescriptIon
     public class DescriptionStore
     {
         private readonly DirectoryInfo _directory;
-        private Encoding _encoding;
+        private Encoding? _encoding;
         private CommentFormat _format;
-        private readonly Dictionary<string, DescriptIonEntry> _entries;
+        private readonly Dictionary<string, string> _entries;
 
         private const string FileName = "descript.ion";
 
@@ -52,7 +52,7 @@ namespace DescriptIon
         public DescriptionStore(DirectoryInfo directory, CommentFormat format = CommentFormat.AutoDetect)
         {
             _directory = directory ?? throw new ArgumentNullException(nameof(directory));
-            _entries = new Dictionary<string, DescriptIonEntry>(StringComparer.OrdinalIgnoreCase);
+            _entries = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             _format = format;
             _encoding = null;
         }
@@ -69,8 +69,8 @@ namespace DescriptIon
         /// 字典的键为文件名（不区分大小写），值为对应的 <see cref="DescriptIonEntry"/> 对象。
         /// 注释内容始终使用标准 <c>\n</c> 表示换行，与底层格式无关。
         /// </value>
-        public IReadOnlyDictionary<string, DescriptIonEntry> Entries =>
-            new Dictionary<string, DescriptIonEntry>(_entries, StringComparer.OrdinalIgnoreCase);
+        public IReadOnlyDictionary<string, string> Entries =>
+            new Dictionary<string, string>(_entries, StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// 获取或设置当前使用的注释格式。
@@ -84,6 +84,21 @@ namespace DescriptIon
         {
             get => _format;
             set => _format = value;
+        }
+
+        /// <summary>
+        /// 获取或设置用于读写 <c>descript.ion</c> 文件的编码。
+        /// 默认为 UTF-8（带 BOM）。
+        /// </summary>
+        /// <remarks>
+        /// 如果调用 <see cref="Load"/> 且文件存在时，
+        /// 此属性将反映实际检测到的格式。
+        /// 修改此属性会影响后续 <see cref="Save"/> 的输出格式。
+        /// </remarks>
+        public Encoding Encoding
+        {
+            get => _encoding ??= new UTF8Encoding(encoderShouldEmitUTF8Identifier: true);
+            set => _encoding = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         /// <summary>
@@ -111,7 +126,7 @@ namespace DescriptIon
             string content = SmartFile.ReadAllText(filePath, _encoding);
 
             string[] lines = content.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            Dictionary<string, DescriptIonEntry> entries = new Dictionary<string, DescriptIonEntry>(StringComparer.OrdinalIgnoreCase);
+            Dictionary<string, string> entries = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             CommentFormat detectedFormat = CommentFormat.TotalCommander; // 默认假设 TC
 
             foreach (string line in lines)
@@ -123,24 +138,24 @@ namespace DescriptIon
                 {
                     detectedFormat = CommentFormat.TotalCommander;
                     string rawLine = line.Substring(0, line.Length - 2); // 移除标记
-                    DescriptIonEntry entry = ParseLineInternal(rawLine, isTotalCommander: true);
-                    if (entry != null && !string.IsNullOrEmpty(entry.FileName))
-                        entries[entry.FileName] = entry;
+                    var (fileName, comment) = ParseLineInternal(rawLine, isTotalCommander: true);
+                    if (!string.IsNullOrEmpty(fileName))
+                        entries[fileName] = comment;
                 }
                 // 否则检查是否含 \u00A0（Double Commander 特征）
                 else if (line.Contains("\u00a0") && !line.Contains("\\n"))
                 {
                     detectedFormat = CommentFormat.DoubleCommander;
-                    DescriptIonEntry entry = ParseLineInternal(line, isTotalCommander: false);
-                    if (entry != null && !string.IsNullOrEmpty(entry.FileName))
-                        entries[entry.FileName] = entry;
+                    var (fileName, comment) = ParseLineInternal(line, isTotalCommander: false);
+                    if (!string.IsNullOrEmpty(fileName))
+                        entries[fileName] = comment;
                 }
                 else
                 {
                     // 普通单行：按 TC 方式解析（兼容性更好）
-                    DescriptIonEntry entry = ParseLineInternal(line, isTotalCommander: true);
-                    if (entry != null && !string.IsNullOrEmpty(entry.FileName))
-                        entries[entry.FileName] = entry;
+                    var (fileName, comment) = ParseLineInternal(line, isTotalCommander: true);
+                    if (!string.IsNullOrEmpty(fileName))
+                        entries[fileName] = comment;
                 }
             }
 
@@ -169,24 +184,26 @@ namespace DescriptIon
             string filePath = Path.Combine(_directory.FullName, FileName);
             List<string> lines = new List<string>();
 
-            foreach (DescriptIonEntry entry in _entries.Values)
+            foreach (var kvp in _entries)
             {
+                string fileName = kvp.Key;
+                string comment = kvp.Value;
                 //需要等待 Double Commander 提供文件名内存在 " 字符的支持
-                string fileNamePart = entry.FileName.Contains(' ') || entry.FileName.Contains('"')
-                    ? $"\"{entry.FileName.Replace("\"", "\"\"")}\""
-                    : entry.FileName;
+                string fileNamePart = fileName.Contains(' ') || fileName.Contains('"')
+                    ? $"\"{fileName.Replace("\"", "\"\"")}\""
+                    : fileName;
 
                 string outputComment;
                 if (_format == CommentFormat.DoubleCommander)
                 {
                     // Double Commander: \n → \u00A0
-                    outputComment = entry.Comment.Replace("\n", "\u00A0");
+                    outputComment = comment.Replace("\n", "\u00A0");
                 }
                 else
                 {
                     // Total Commander: \n → \\n
-                    outputComment = entry.Comment.Replace("\n", "\\n");
-                    if (entry.Comment.Contains('\n'))
+                    outputComment = comment.Replace("\n", "\\n");
+                    if (comment.Contains('\n'))
                     {
                         outputComment += "\u0004\u00C2";
                     }
@@ -219,21 +236,19 @@ namespace DescriptIon
             if (fileName == null) throw new ArgumentNullException(nameof(fileName));
             if (comment == null) throw new ArgumentNullException(nameof(comment));
 
-            _entries[fileName] = new DescriptIonEntry
-            {
-                FileName = fileName,
-                Comment = comment
-            };
+            _entries[fileName] = comment;
         }
 
         /// <summary>
-        /// 获取指定文件的注释，如果不存在则返回 <see langword="null"/>。
+        /// 获取指定文件的注释。
         /// </summary>
         /// <param name="fileName">文件名（不区分大小写）。</param>
-        /// <returns>注释字符串（使用标准 <c>\n</c> 换行），或 <see langword="null"/>。</returns>
-        public string GetComment(string fileName)
+        /// <returns>注释字符串（使用标准 <c>\n</c> 表示换行），如果不存在则返回 <see langword="null"/>。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="fileName"/> 为 null。</exception>
+        public string? GetComment(string fileName)
         {
-            return _entries.TryGetValue(fileName, out DescriptIonEntry entry) ? entry.Comment : null;
+            if (fileName == null) throw new ArgumentNullException(nameof(fileName));
+            return _entries.TryGetValue(fileName, out string? comment) ? comment : null;
         }
 
         /// <summary>
@@ -281,12 +296,12 @@ namespace DescriptIon
         {
             comparer ??= StringComparer.CurrentCulture;
 
-            var sortedKeys = _entries.Keys
+            List<string> sortedKeys = _entries.Keys
                 .OrderBy(k => k, comparer)
                 .ToList();
 
             // 重建字典以保留插入顺序（.NET Core 2.1+ / .NET Standard 2.1+ 保证 Dictionary 插入顺序）
-            var newEntries = new Dictionary<string, DescriptIonEntry>(StringComparer.OrdinalIgnoreCase);
+            Dictionary<string, string> newEntries = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             foreach (string key in sortedKeys)
             {
                 newEntries[key] = _entries[key];
@@ -308,10 +323,10 @@ namespace DescriptIon
         /// 对于 DC，\u00A0 已在调用前替换为 \n。
         /// </param>
         /// <returns>解析后的条目，或 <see langword="null"/>（若无效）。</returns>
-        private static DescriptIonEntry ParseLineInternal(string fullLine, bool isTotalCommander)
+        private static (string fileName, string comment) ParseLineInternal(string fullLine, bool isTotalCommander)
         {
             if (string.IsNullOrWhiteSpace(fullLine))
-                return null;
+                return (string.Empty, string.Empty);
 
             int i = 0;
             bool inQuotes = false;
@@ -366,11 +381,7 @@ namespace DescriptIon
                 comment = comment.Replace("\u00A0", "\n");
             }
 
-            return new DescriptIonEntry
-            {
-                FileName = fileName,
-                Comment = comment
-            };
+            return (fileName, comment);
         }
     }
 }
