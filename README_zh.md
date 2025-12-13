@@ -26,7 +26,7 @@
 
 ## 📦 安装
 
-通过 NuGet 安装包:
+通过 [NuGet](https://www.nuget.org/packages/DescriptIon.Core) 安装包:
 
 ```bash
 dotnet add package DescriptIon.Core

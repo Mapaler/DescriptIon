@@ -29,7 +29,7 @@
 
 ## 📦 Installation
 
-Install the package via NuGet:
+Install the package via [NuGet](https://www.nuget.org/packages/DescriptIon.Core):
 
 ```bash
 dotnet add package DescriptIon.Core
@@ -155,7 +155,7 @@ Beyond Total Commander and Double Commander, support varies:
 
 - **📦 7-Zip**  
   - ✅ Reads `descript.ion` to show file comments  
-  - ⚠️ **Only supports UTF-8 encoding** (BOM optional)  
+  - ⚠️ **Only supports UTF-8 encoding** (with BOM)  
   - ❌ **Does not support multi-line comments** — line breaks are ignored or truncated  
   - 💡 Recommendation: Use single-line comments and UTF-8 for 7-Zip compatibility
 
