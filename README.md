@@ -1,4 +1,4 @@
-﻿# DescriptIon — Cross-platform `descript.ion` File Reader/Writer for .NET
+﻿# DescriptIon — Cross-platform **descript.ion** File Reader/Writer for .NET
 
 [![.NET Standard 2.0](https://img.shields.io/badge/.NET-Standard%202.0-blue?logo=.net)](https://dotnet.microsoft.com/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)

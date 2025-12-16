@@ -1,4 +1,4 @@
-﻿# DescriptIon — 跨平台 `descript.ion` 文件读写库
+﻿# DescriptIon — 跨平台 **descript.ion** 文件读写库
 
 [![.NET](https://img.shields.io/badge/.NET-Standard%202.0-blue?logo=.net)](https://dotnet.microsoft.com/) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
