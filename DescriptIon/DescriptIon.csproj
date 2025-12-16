@@ -14,7 +14,7 @@
     
     <!-- 开源信息 -->
     <PackageProjectUrl>https://github.com/Mapaler/DescriptIon</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Mapaler/DescriptIon</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Mapaler/DescriptIon.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     
     <!-- 许可证 -->
